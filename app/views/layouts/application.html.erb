@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Miam</title>
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<canvas id="sub-canvas"></canvas>
+<header class="body-header container">
+  <a href="/" class="logo-link">
+    <canvas id="logo-canvas"></canvas>
+  </a>
+</header>
+<div class="container">
+  <%= yield %>
+</div>
+<%= javascript_include_tag "application" %>
+</body>
+</html>

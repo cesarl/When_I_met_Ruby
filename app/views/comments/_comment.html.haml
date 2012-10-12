@@ -1,0 +1,6 @@
+%div.comment-autor
+  = comment.commenter
+%div.comment-body
+  = comment.body
+%div.comment-destroy
+  = link_to "Erase comment", [comment.post, comment], :confirm => 'Are you sure?', :method => :delete

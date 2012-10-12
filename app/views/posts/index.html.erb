@@ -1,0 +1,21 @@
+<div class="last-post-block raw">
+  <% @posts.each do |post| %>
+  <div class="last-post raw">
+    <% if post.illustration? %>
+      <div class="image-box">
+        <%= image_tag post.illustration.url(:thumbnail) %>
+      </div>
+    <% end %>
+    <article class="span12">
+      <h3><%= link_to post.title, post %></h3>
+      <%= BlueCloth.new(post.body).to_html.html_safe %>
+    </article>
+    <div class="span12 admin admin-post">
+      <span><%= link_to 'Show', post %></span>
+      <span><%= link_to 'Edit', edit_post_path(post) %></span>
+      <span><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></span>
+    </div>
+  </div>
+  <% end %>
+  <footer class="span12"><%= link_to "All my blog posts", posts_path %></footer>
+</div>

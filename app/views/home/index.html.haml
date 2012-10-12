@@ -1,0 +1,14 @@
+%div.last-post-block.raw
+  - @posts.each do |post|
+    %div.last-post.raw
+      %article.span12
+        - if post.illustration?
+          %div.image-box
+            = image_tag post.illustration.url(:thumbnail)
+        %h3
+          = link_to post.title, post
+        %div
+          - text = BlueCloth.new(post.body).to_html
+          = strip_tags(text)
+  %footer.span12
+    = link_to "All my blog posts", posts_path

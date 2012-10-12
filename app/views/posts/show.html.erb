@@ -1,0 +1,40 @@
+<div class="node-container">
+  <header class="service-links">
+    <%= link_to 'Download pdf', params.merge(:format => :pdf) %>
+    <%= link_to 'Edit', edit_post_path(@post) %>
+    <%= link_to 'Back', posts_path %>
+  </header>
+  <article class="row">
+    <h1 class="post-title title span12">
+      <%= @post.title %>
+    </h1>
+    <% if @post.illustration? %>
+      <div class="image-box">
+        <%= image_tag @post.illustration.url(:thumbnail) %>
+      </div>
+    <% end %>
+    <div class="span12">
+      <%= BlueCloth.new(@post.body).to_html.html_safe %>
+    </div>
+  </article>
+  <div class="post-comment-container comment-container row">
+    <div class="span8">
+      <%= render @post.comments %>
+      </div>
+    <div class="span3">
+      <%= form_for ([@post, @post.comments.build]) do |com| %>
+      <div class="comment-name field">
+	<%= com.label :commenter %><br />
+	<%= com.text_field :commenter %>
+      </div>
+      <div class="comment-body field">
+	<%= com.label :body %><br />
+	<%= com.text_area :body %>
+      </div>
+      <div class="comment-button button submit">
+	<%= com.submit %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div> <!-- // .node-container ---!>
