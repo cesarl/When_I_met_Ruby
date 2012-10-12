@@ -42,3 +42,4 @@ gem 'haml-rails'
 gem 'bluecloth', '>= 2.0.0'
 gem "paperclip", "~> 3.1"
 gem 'prawn'
+gem 'activeadmin'

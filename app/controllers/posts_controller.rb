@@ -3,6 +3,11 @@ class PostsController < ApplicationController
 
   require "prawn"
 
+  def get_rss
+    @posts = Post.all
+    format.xml { render xml: @post }
+  end
+
   def get_pdf
     post = Post.find(params[:id])
     send_data generate_pdf(post), :filename => "#{post.title}.pdf", :type => "application/pdf"
@@ -11,10 +16,11 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.find(:all, :order => "created_at DESC")
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @posts }
+      format.xml { render xml: @posts }
     end
   end
 
