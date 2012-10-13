@@ -1,6 +1,6 @@
 #= require vendor/zepto.min.js
 Zepto ->
-        links = $("a")
+        links = $("a.internal-link")
         links.live("click", (e) ->
                 destination = $(this).attr("href")
                 goPlz(destination)

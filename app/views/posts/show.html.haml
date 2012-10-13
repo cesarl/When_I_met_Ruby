@@ -1,0 +1,26 @@
+%div.node-container
+  %header.service-links
+    = link_to 'Download pdf', params.merge(:format => :pdf)
+  %article.row
+    %h1.post-title.title.span12
+      = @post.title
+    - if @post.illustration?
+      %div.image-box
+        = image_tag @post.illustration.url(:thumbnail)
+    %div.span12
+      = BlueCloth.new(@post.body).to_html.html_safe
+  %div.post-comment-container.comment-container.row
+    %div.span8
+      = render @post.comments
+    %div.span3
+      - form_for ([@post, @post.comments.build]) do |com|
+        %div.comment-name.field
+          Name
+          %br
+          = com.text_field :commenter
+        %div.comment-body.field
+          = com.label :body
+          %br
+          = com.text_area :body
+        %div.comment-button.button.submit
+          = com.submit

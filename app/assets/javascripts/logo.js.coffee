@@ -1,46 +1,41 @@
-
 class SubCanvas
         constructor: (id) ->
                 @domElem = document.getElementById id
-                @resize()
                 @ctx = @domElem.getContext "2d"
-                @domElem.style.position = "fixed"
-                @domElem.style.zIndex = -10
-                @_windowResizeListener = window.addEventListener "resize", (=> @resize), false
-                @resize()
+                @domElem.style.position = "absolute"
+                @domElem.style.top = 0
+                @domElem.style.left = 0
+                @domElem.style.zIndex = 0
+                @domElem.style.pointerEvents = "none"
+                @_windowResizeListener = window.addEventListener "resize", (=> @resize()), false
+                setTimeout (=> @resize()), 150
         resize: () ->
-                @w = window.innerWidth
-                @h = window.innerHeight
+                @w = if window.innerWidth > document.body.offsetWidth then window.innerWidth else document.body.offsetWidth
+                @h = if window.innerHeight > document.body.offsetHeight then window.innerHeight else document.body.offsetHeight
                 @domElem.width = @w
                 @domElem.height = @h
         clear: () ->
                 @domElem.width = 0
                 @domElem.width = @w
         fireLaser: (from1, to1, from2, to2) ->
-                @anim = true
-                @domElem.style.zIndex = 20
-                b1 = {x: from1.projx, y: from1.projy, vx: from1.dirx, vy: from1.diry}
-                b2 = {x: from2.projx, y: from2.projy, vx: from2.dirx, vy: from2.diry}
-                draw = =>
-                        b1.x += b1.vx
-                        b1.y += b1.vy
-                        @ctx.arc b1.x, b1.y, 15, 0, Math.PI * 180 / 2
-                        @ctx.fill()
-                        b2.x += b2.vx
-                        b2.y += b2.vy
-                        @ctx.arc b2.x, b2.y, 15, 0, Math.PI * 180 / 2
-                        @ctx.fill()
-                i = 0
-                lazers = =>
-                        @clear()
-                        draw()
-                        if i < 100
-                                requestAnimFrame(lazers)
-                        else
-                                @domElem.style.zIndex = -10
-                                @clear()
-                        i++
-                lazers()
+                @ctx.strokeStyle = "red"
+                @ctx.lineCap = "round"
+                @ctx.lineJoin = "round"
+                @ctx.lineWidth = 15
+                @ctx.beginPath()
+                @ctx.moveTo(from1.projx, from1.projy)
+                @ctx.lineTo(to1.x, to1.y)
+                @ctx.closePath()
+                @ctx.stroke()
+                @ctx.beginPath()
+                @ctx.moveTo(from2.projx, from2.projy)
+                @ctx.lineTo(to2.x, to2.y)
+                @ctx.closePath()
+                @ctx.stroke()
+                setTimeout((
+                        => @clear()
+                        ) , 50
+                )
 
 
 class Eye
@@ -55,19 +50,18 @@ class Eye
                 @y = @cy
                 @dirx = @diry = 0
                 @pi = Math.PI
-                @_windowResizeListener = window.addEventListener "resize", (=> @resize), false
-                @resize()
+                @_windowResizeListener = window.addEventListener "resize", (=> @resize()), false
+                setTimeout (=> @resize()), 150
         updatePos: (x, y) ->
                 @vx = @absx - x
                 @vy = @absy - y
                 @v = Math.atan2 @vy, @vx
                 @dirx = (- Math.cos(@v) * @hRad) >> 0
                 @diry = (- Math.sin(@v) * @hRad) >> 0
-                @x =  @cx + @dirx
-                @y =  @cy + @diry
+                @x =  if Math.abs(@dirx) < Math.abs(@vx) then @cx + @dirx else @cx - @vx
+                @y =  if Math.abs(@diry) < Math.abs(@vy) then @cy + @diry else @cy - @vy
                 @projx = @absx + @dirx
                 @projy = @absy + @diry
-
                 @draw()
         clear: () ->
                 @ctx.clearRect 0, 0, @ctx.canvas.width, @ctx.canvas.height
@@ -75,6 +69,17 @@ class Eye
         draw: () ->
                 @ctx.drawImage @img, 97, 0, 171, 170, @cx - @hGlobRad, @cy - @hGlobRad, @globRad, @globRad
                 @ctx.drawImage @img, 0, 0, 97, 97, @x - @hRad, @y - @hRad, @rad, @rad
+                @
+        fire: (x, y) ->
+                @ctx.strokeStyle = "red"
+                @ctx.lineCap = "round"
+                @ctx.lineJoin = "round"
+                @ctx.lineWidth = 15
+                @ctx.beginPath()
+                @ctx.moveTo(@projx, @projy)
+                @ctx.lineTo(x, y)
+                @ctx.closePath()
+                @ctx.stroke()
                 @
         resize: () ->
                 @absx = @cx + @ctx.canvas.offsetLeft
@@ -85,21 +90,21 @@ class Eye
 class Eyes
         constructor: (@subCanvas) ->
                 @eyeSprite = new Image();
-                @eyeSprite.src = "http://demo.cesar.lc/eye.png"
+                @eyeSprite.src = "/eye.png"
                 @eyeSprite.load =  @init()
         init: () ->
                 @mx = @my = 0
                 @eyeCanvas = document.getElementById "logo-canvas"
-                console.log @eyeCanvas
+                @eyeCanvas.style.zIndex = -3
                 @eyeCanvas.width = 300
-                @eyeCanvas.height = 200
+                @eyeCanvas.height = 140
                 @eyeCtx = @eyeCanvas.getContext "2d"
                 @followMouse()
                 @er = new Eye(300 / 3, 150 / 2, @eyeCtx, @eyeSprite).draw()
                 @el = new Eye(300 / 3 * 2 , 150 / 2, @eyeCtx, @eyeSprite).draw()
         followMouse: () ->
                 @_mouseMoveListener = document.addEventListener "mousemove", ((e) => @onMouseMove(e)), false
-                @_mouseClickListener = document.addEventListener "click",  ((e) => @onMouseClick(e)), false
+                @_mouseDownListener = document.addEventListener "mousedown",  ((e) => @onMouseClick(e)), false
         getMouseCoord: (e) ->
                 @mx = e.pageX
                 @my = e.pageY
@@ -107,8 +112,6 @@ class Eyes
                 @getMouseCoord e
                 @updateEyesPos()
         onMouseClick: (e) ->
-                @getMouseCoord e
-                @updateEyesPos();
                 @eyesOnFire();
         updateEyesPos: () ->
                 @el.clear()
@@ -117,49 +120,76 @@ class Eyes
         eyesOnFire: () ->
                 @subCanvas.fireLaser(@er, {x: @mx, y: @my}, @el, {x: @mx, y: @my})
 
+class Bubble
+        constructor: (@y, maxX) ->
+                @x = Math.random() * maxX >> 0
+                @size = (Math.random() * 15) >> 0
+                @dir = -1
+                @dec = 0
+        update: () ->
+                @y = (@y - @size / 5) >> 0
+                @x = (@x + (@dir * 1)) >> 0
+                if @dec > 30
+                        @dir *= -1
+                        @dec = 0
+                @dec++
+                @size -= 0.08
+                @
+
+class Beer
+        constructor: (id) ->
+                @domElem = document.getElementById id
+                @domElem.style.position = "fixed"
+                @domElem.style.bottom = 0
+                @domElem.style.zIndex = 0
+                @domElem.style.pointerEvents = "none"
+                @ctx = @domElem.getContext "2d"
+                @max = 300
+                @bbnb = 0
+                @interval = 5
+                @intervalCounter = 0
+                @col = []
+                @_windowResizeListener = window.addEventListener "resize", (=> @resize()), false
+                setTimeout (=> @resize() and @bubble()), 150
+        resize: () ->
+                @w = window.innerWidth
+                @h = window.innerHeight
+                @domElem.width = @w
+                @domElem.height = @h
+        bubble: () ->
+                @ctx.clearRect 0, 0, @w, @h
+                @ctx.globalAlpha = 0.3
+                @ctx.fillStyle = "#fff"
+                if @bbnb < @max and @intervalCounter > @interval
+                        @getBubbles()
+                        @intervalCounter = 0
+                @col.forEach (obj) =>
+                        @ctx.beginPath();
+                        @ctx.arc obj.x, obj.y, obj.size, 0, Math.PI * 180 / 2
+                        @ctx.fill()
+                @col.forEach (obj) =>
+                        obj.update()
+                        if obj.size < 0.1 or obj.y < 0
+                                @trash(obj)
+                @intervalCounter++
+                requestAnimFrame(=> @bubble())
+        trash: (elem) ->
+                i = 0
+                @bbnb--
+                while @col[i]
+                        if @col[i] is elem
+                                @col.splice i, 1
+                                return true
+                        i++
+        getBubbles: () ->
+                i = 0
+                m = ((@max - @bbnb) / 20) >> 0
+                while i < m
+                        @col.push new Bubble(@h, @w)
+                        @bbnb++
+                        i++
+
+beer = new Beer("bgCanvas")
 subcanvas = new SubCanvas "sub-canvas"
 logo = new Eyes(subcanvas)
 
-# class Bubble
-#         constructor: (@y, maxX) ->
-#                 @x = Math.random() * maxX
-#                 @size = (Math.random() * 15) >> 0
-#                 @vel = @size / 3 + 1
-#                 @dir = -1
-#                 @dec = 0
-#         update: () ->
-#                 if @dec > @size / 2 then @dir *= -1
-#                 @dec += (@size / 3) * @dir
-#                 @size *= 0.98
-#                 @
-
-# class Beer
-#         constructor: (id) ->
-#                 @domElem = document.getElementById id
-#                 @ctx = @domElem.getContext "2d"
-#                 @resize()
-#                 @bbnb = 0
-#                 @col = []
-#                 @_windowResizeListener = window.addEventListener "resize", (=> @resize), false
-#                 @bubble()
-#         resize: () ->
-#                 @w = window.innerWidth
-#                 @h = window.innerHeight
-#                 @max = @w / 5
-#                 @domElem.width = @w
-#                 @domElem.height = @h
-#         bubble: () ->
-#                 @ctx.clearRect 0, 0, @w, @h
-#                 if @bbnb < @max
-#                         @getBubbles()
-#                 @col.forEach (obj) =>
-#                         @ctx.fillRect obj.x, obj.y, obj.size, obj.size
-#                         console.log obj.x, obj.y, obj.size, obj.size
-#         getBubbles: () ->
-#                 i = 0
-#                 m = ((@max - @bbnb) / 3) >> 0
-#                 while i < m
-#                         @col.push new Bubble(@h, @w)
-#                         i++
-
-# beer = new Beer("bgCanvas")

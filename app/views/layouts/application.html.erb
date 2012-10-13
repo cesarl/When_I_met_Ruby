@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Miam</title>
+  <title>Le site de mauvais gout</title>
   <%= stylesheet_link_tag "application", :media => "all" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-<canvas id="sub-canvas"></canvas>
-<header class="body-header container">
-  <a href="/" class="logo-link">
-    <canvas id="logo-canvas"></canvas>
-  </a>
-</header>
-<div class="container" id="container">
-  <div class="content-container">
-    <%= yield %>
+<div class="top-beer"></div>
+<div class="main-content container">
+  <header class="body-header navbar navbar-inverse">
+    <div class="container header-inside">
+      <a href="/" class="logo-link internal-link">
+	<canvas id="logo-canvas"></canvas>
+	<h1>Mmmmmmmmmmmmmh</h1>
+      </a>
+    </div>
+  </header>
+  <div class="container" id="container">
+    <div class="content-container">
+      <%= yield %>
+    </div>
   </div>
 </div>
-<canvas id="bgCanvas"></canvas>
-<%= javascript_include_tag "application" %>
+  <canvas id="sub-canvas"></canvas>
+  <canvas id="bgCanvas"></canvas>
+  <div class="bottom-beer"></div>
+  <%= javascript_include_tag "application" %>
 </body>
 </html>
