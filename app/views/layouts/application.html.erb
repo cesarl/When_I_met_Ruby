@@ -12,9 +12,12 @@
     <canvas id="logo-canvas"></canvas>
   </a>
 </header>
-<div class="container">
-  <%= yield %>
+<div class="container" id="container">
+  <div class="content-container">
+    <%= yield %>
+  </div>
 </div>
+<canvas id="bgCanvas"></canvas>
 <%= javascript_include_tag "application" %>
 </body>
 </html>

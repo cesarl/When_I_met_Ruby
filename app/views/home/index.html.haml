@@ -6,7 +6,7 @@
           %div.image-box
             = image_tag post.illustration.url(:thumbnail)
         %h3
-          = link_to post.title, post
+          = link_to post.title, post, :class => "internal-link"
         %div
           - text = BlueCloth.new(post.body).to_html
           = strip_tags(text)
