@@ -10,7 +10,8 @@ class SubCanvas
                 @_windowResizeListener = window.addEventListener "resize", (=> @resize()), false
                 setTimeout (=> @resize()), 150
         resize: () ->
-                @w = if window.innerWidth > document.body.offsetWidth then window.innerWidth else document.body.offsetWidth
+                console.log window
+                @w = if window.innerWidth > document.body.offsetWidth then window.innerWidth - 15 else document.body.offsetWidth
                 @h = if window.innerHeight > document.body.offsetHeight then window.innerHeight else document.body.offsetHeight
                 @domElem.width = @w
                 @domElem.height = @h
@@ -34,7 +35,7 @@ class SubCanvas
                 @ctx.stroke()
                 setTimeout((
                         => @clear()
-                        ) , 50
+                        ) , 80
                 )
 
 
@@ -91,7 +92,8 @@ class Eyes
         constructor: (@subCanvas) ->
                 @eyeSprite = new Image();
                 @eyeSprite.src = "/eye.png"
-                @eyeSprite.load =  @init()
+                @eyeSprite.addEventListener "load", (e) =>
+                        @init()
         init: () ->
                 @mx = @my = 0
                 @eyeCanvas = document.getElementById "logo-canvas"
@@ -100,8 +102,9 @@ class Eyes
                 @eyeCanvas.height = 140
                 @eyeCtx = @eyeCanvas.getContext "2d"
                 @followMouse()
-                @er = new Eye(300 / 3, 150 / 2, @eyeCtx, @eyeSprite).draw()
-                @el = new Eye(300 / 3 * 2 , 150 / 2, @eyeCtx, @eyeSprite).draw()
+                @er = new Eye(300 / 3, 150 / 2, @eyeCtx, @eyeSprite)
+                @el = new Eye(300 / 3 * 2 , 150 / 2, @eyeCtx, @eyeSprite)
+                @updateEyesPos()
         followMouse: () ->
                 @_mouseMoveListener = document.addEventListener "mousemove", ((e) => @onMouseMove(e)), false
                 @_mouseDownListener = document.addEventListener "mousedown",  ((e) => @onMouseClick(e)), false
@@ -112,6 +115,7 @@ class Eyes
                 @getMouseCoord e
                 @updateEyesPos()
         onMouseClick: (e) ->
+                @getMouseCoord e
                 @eyesOnFire();
         updateEyesPos: () ->
                 @el.clear()
@@ -167,7 +171,7 @@ class Beer
                         @ctx.beginPath();
                         @ctx.arc obj.x, obj.y, obj.size, 0, Math.PI * 180 / 2
                         @ctx.fill()
-                @col.forEach (obj) =>
+                @col.forEach (obj, index) =>
                         obj.update()
                         if obj.size < 0.1 or obj.y < 0
                                 @trash(obj)

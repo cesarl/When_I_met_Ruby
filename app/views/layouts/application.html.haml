@@ -1,0 +1,26 @@
+!!! 5
+%html
+  %head
+    %title
+      Lorem Ipsum
+    %link{ :href => "http://fonts.googleapis.com/css?family=Carter+One", :rel => "stylesheet", :type => "text/css"}
+    = stylesheet_link_tag "application", :media => "all"
+    = csrf_meta_tags
+  %body
+    %div.top-beer
+    %div.main-content.container
+      %header.body-header.navbar.navbar-inverse
+        %div.container.header-inside
+          %a{ :href => "/", :class => "logo-link internal-link"}
+            %canvas{ :id => "logo-canvas"}
+            %h1
+              Lorem ipsum dolor sin amet
+      %div{ :class => "container",  :id => "container"}
+        %div.content-container
+          = yield
+    %canvas{ :id => "sub-canvas"}
+    %canvas{ :id => "bgCanvas"}
+    %div.bottom-beer
+    = javascript_include_tag "application"
+  </body>
+</html>

@@ -1,19 +1,24 @@
 %div.node-container
   %header.service-links
     = link_to 'Download pdf', params.merge(:format => :pdf)
+    = link_to 'Admin post', admin_post_path(@post)
   %article.row
-    %h1.post-title.title.span12
-      = @post.title
     - if @post.illustration?
       %div.image-box
         = image_tag @post.illustration.url(:thumbnail)
-    %div.span12
+    %h1.post-title.title
+      = @post.title
+    %div
       = BlueCloth.new(@post.body).to_html.html_safe
   %div.post-comment-container.comment-container.row
     %div.span8
+      %h5
+        Commentaires:
       = render @post.comments
     %div.span3
-      - form_for ([@post, @post.comments.build]) do |com|
+      %h5
+        Ajouter un commentaire
+      = form_for ([@post, @post.comments.build]) do |com|
         %div.comment-name.field
           Name
           %br

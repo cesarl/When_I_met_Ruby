@@ -1,6 +1,12 @@
 %div.comment-autor
+  %b
+    Auteur
+  %br
   = comment.commenter
 %div.comment-body
-  = comment.body
+  %b
+    Commentaire
+  %br
+  = BlueCloth.new(comment.body).to_html.html_safe
 %div.comment-destroy
   = link_to "Erase comment", [comment.post, comment], :confirm => 'Are you sure?', :method => :delete

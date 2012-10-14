@@ -42,3 +42,23 @@ body {
     padding: 30px 30px;
     background-color: rgba(255, 255, 255, 0.8);
 }
+
+#logo-canvas {
+    float: left;
+}
+
+.logo-link h1 {
+    margin-top: 60px;
+    font-family: 'Carter One', cursive;
+}
+
+.image-box {
+    float: left;
+    margin: 0 15px 15px 0;
+}
+
+.last-post.raw {
+    border-bottom: 1px #caca23 solid;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}

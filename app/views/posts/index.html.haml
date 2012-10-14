@@ -1,19 +1,21 @@
 %div.get-rss
-  = link_to 'Subscribe to rss', params.merge(:format => :xml)
+  %h4
+    = link_to 'Subscribe to rss', params.merge(:format => :xml)
 %div.last-post-block.raw
   - @posts.each do |post|
-    %div.last-post.raw
-      - if post.illustration?
-        %div.image-box
-          = image_tag post.illustration.url(:thumbnail)
-      %article.span12
+    %div.last-post.raw.clearfix
+      %article
+        - if post.illustration?
+          %div.image-box
+            = image_tag post.illustration.url(:thumbnail)
         %h3
           = link_to post.title, post, :class => "internal-link"
         = BlueCloth.new(post.body).to_html.html_safe
-      %div.span12.admin.admin-post
-        %span
-          = link_to 'Show', post
-        %span
-          = link_to 'Edit', edit_post_path(post)
-        %span
-          = link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }
+        %div.span12.admin.admin-post
+          %span
+            = link_to 'Show', post
+          %span
+            = link_to 'Edit', edit_post_path(post)
+          %span
+            = link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }
+        %link{ :href => params.merge(:format => :xml), :rel => "alternate", :type => "application/rss+xml", :title => "My rss feed"}

@@ -1,14 +1,27 @@
+%header
+  %h4
+    = link_to "All my blog posts", posts_path, :class => "internal-link"
+%div
+  %b Bienvenue
+  %p
+    Ce "site" a été créé dans l'optique de découvrir le Ruby et Ruby on Rails
+  %p
+    Il a été fait rapidement et n'a pas été développé en suivant une architecture pré-établie
+    %br
+    Les fonctionnalités y ont été ajoutées au fur et à mesure de ma découverte de Ruby on Rails
+
 %div.last-post-block.raw
+  %div
+    %h2
+      Derniers articles
   - @posts.each do |post|
-    %div.last-post.raw
-      %article.span12
+    %div.last-post.raw.clearfix
+      %article
         - if post.illustration?
-          %div.image-box
+          %div.image-box.clearfix
             = image_tag post.illustration.url(:thumbnail)
         %h3
           = link_to post.title, post, :class => "internal-link"
         %div
           - text = BlueCloth.new(post.body).to_html
           = strip_tags(text)
-  %footer.span12
-    = link_to "All my blog posts", posts_path
