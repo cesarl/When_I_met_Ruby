@@ -10,7 +10,6 @@ class SubCanvas
                 @_windowResizeListener = window.addEventListener "resize", (=> @resize()), false
                 setTimeout (=> @resize()), 150
         resize: () ->
-                console.log window
                 @w = if window.innerWidth > document.body.offsetWidth then window.innerWidth - 15 else document.body.offsetWidth
                 @h = if window.innerHeight > document.body.offsetHeight then window.innerHeight else document.body.offsetHeight
                 @domElem.width = @w
@@ -123,6 +122,7 @@ class Eyes
                 @er.updatePos @mx, @my
         eyesOnFire: () ->
                 @subCanvas.fireLaser(@er, {x: @mx, y: @my}, @el, {x: @mx, y: @my})
+                @subCanvas.ctx.drawImage @eyeSprite, 279, 0, 165, 144, @mx - 80, @my - 70, 165, 144
 
 class Bubble
         constructor: (@y, maxX) ->
