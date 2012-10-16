@@ -23,3 +23,4 @@ J'ai tenté d'y développer un blog avec pour fonctionnalités:
  - Mot de passe : doublerainbowinthesky
  - acces _/admin_
 
+![Coucou](https://i.canvasugc.com/ugc/original/8f718d6fd18207699929bbf002917c48c193d29c.gif)
